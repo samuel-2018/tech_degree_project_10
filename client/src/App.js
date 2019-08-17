@@ -1,8 +1,15 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
+import axios from "axios";
+
+
 
 function App() {
+  const result = axios.get("http://localhost:5000/api/courses");
+  console.log(result);
+  
+
   return (
     <div className="App">
       <header className="App-header">
@@ -18,6 +25,7 @@ function App() {
         >
           Learn React
         </a>
+  
       </header>
     </div>
   );

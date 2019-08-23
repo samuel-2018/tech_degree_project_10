@@ -1,7 +1,11 @@
 import React, {Component} from "react";
 import Header from "./Header";
 import axios from "axios";
-// import { Consumer } from '../App.js';
+import { Link } from 'react-router-dom'
+// Enables access to global state
+import { Consumer } from '../App.js';
+
+import { sendRequest } from './helpers';
 
 class CourseDetail extends Component {
   constructor() {
@@ -13,51 +17,80 @@ class CourseDetail extends Component {
   }
 
   componentDidMount() {
-    // console.log('test1', this.state);
-    
     // Get course ID #
     const id = this.props.id;
 
-    // Get course from api
-    axios.get(`http://localhost:5000/api/courses/${id}`)
+    const url = `http://localhost:5000/api/courses/${id}`;
+
+    sendRequest({ url, method: 'GET' })
       .then((result) => {
-        // console.log(result);
         // store data in state
         this.setState({
           course: result.data,
         })
-      }).then(() => {
-      console.log('test1',this.state);
-      })
-      .catch((error) => {
-        console.log(error);
       })
   }
 
   deleteCourse() {
      // Get course ID #
     const id = this.props.id;
-         // Delete course from api
-    axios.delete(`http://localhost:5000/api/courses/${id}`)
+    // get authorization info from global
+    const { user:{emailAddress:username}, password} = this.state.context;
+
+    const url = `http://localhost:5000/api/courses/${id}`;
+
+    sendRequest({url, method:'DELETE', username, password})
       .then(() => {
-        // TO DO redirect to main page
-        // or confirmation message and link to main page?
-        
-      }).catch((error) => {
-        console.log(error);
+              // TO DO redirect to main page
+              // or confirmation message and link to main page?
+              
+              // back to main page
+              this.props.history.push(`/courses`);         
       })
+
 }
   actionsBarJSX() {
+    // Is the course loaded?
+    // (The course id is needed for the 'update' button.)
     if (this.state.course) {
-      // console.log(this.state.course);
-        
-      const { id, title, description, estimatedTime, materialsNeeded, userId } = this.state.course;
+      const { location } = this.props;
+
+        // get authorization info from context
+      const { user:{id:userId}, authenticatedUser} = this.state.context;
+      
+      const {id, userId:courseOwnerId} = this.state.course;
+
       return (
         <div className="actions--bar">
           <div className="bounds">
-            <div className="grid-100"><span><a className="button" href={`/course/${id}/update`}>Update Course</a><a className="button"
-              href="#" onClick={this.deleteCourse}>Delete Course</a></span><a className="button button-secondary" href="/courses">Return to
-                List</a></div>
+            <div className="grid-100">
+                {(authenticatedUser && userId === courseOwnerId) &&
+                  <span>
+                    <Link
+                    to={{
+                      pathname: `/courses/${id}/update`,
+                      state: { from: location }
+                    }}
+                  className="button" >Update Course
+                    </Link>
+                    <Link
+                    to={{
+                      pathname: `#`,
+                      state: { from: location }
+                    }}
+                  className="button" onClick={this.deleteCourse}>Delete Course
+                    </Link>
+                  </span>
+               }
+             <Link
+              to={{
+                pathname: `/courses`,
+                state: { from: location }
+              }}
+             className="button button-secondary" >Return to
+                List
+              </Link>
+            </div>
           </div>
         </div>
       )
@@ -80,7 +113,7 @@ class CourseDetail extends Component {
             <div className="course--header">
               <h4 className="course--label">Course</h4>
               <h3 className="course--title">{title}</h3>
-              <p>By {id}</p>
+              <p>By {userId}</p>
             </div>
               <div className="course--description">
                 {
@@ -121,7 +154,15 @@ class CourseDetail extends Component {
   render() {
     return (
       <>
-     
+        <Consumer>
+          {context => {
+            // Raises context variable
+            // Immediately as soon as course is loaded in state
+            // (Saving it as an instance varible can case a delay in it being available.)
+            this.state.context = context;
+            this.text = "some value";
+          }}
+        </Consumer>
 
         {this.actionsBarJSX()}
          

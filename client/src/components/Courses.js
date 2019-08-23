@@ -1,5 +1,6 @@
 
 import React, {Component} from "react";
+import { Link } from 'react-router-dom'
 
 // import CourseDetail from "./CourseDetail";
 // import CreateCourse from "./CreateCourse";
@@ -15,6 +16,8 @@ class Courses extends Component {
   }
   
   componentDidMount() {
+    
+
     // Get courses from api
     axios.get("http://localhost:5000/api/courses")
       .then((result) => {
@@ -28,13 +31,14 @@ class Courses extends Component {
       })
 }
 
-  
+
   
   
   render() {
-    console.log(this.props);
     
+    // console.log("Courses (location): ", location);
     
+    const { location } = this.props;
 
      let coursesJSX = '';
     // const { } = this.props;
@@ -45,34 +49,43 @@ class Courses extends Component {
       coursesJSX = this.state.courses.map((course, index) => {
         return (
           <div className="grid-33" key={index}>
-            <a className="course--module course--link" href={`/courses/${course.id}`}>
+            <Link
+              to={{
+                pathname: `/courses/${course.id}`,
+                state: { from: location }
+              }}
+              className="course--module course--link" >
               <h4 className="course--label">Course</h4>
               <h3 className="course--title">{course.title}</h3>
-            </a>
+            </Link>
           </div>)
       })
     } 
 
     // builds a create new course button/box
     const newCourseJSX = (
-       <div className="grid-33"><a className="course--module course--add--module" href="/courses/create">
-            <h3 className="course--add--title"><svg version="1.1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
-                viewBox="0 0 13 13" className="add">
-                <polygon points="7,6 7,0 6,0 6,6 0,6 0,7 6,7 6,13 7,13 7,7 13,7 13,6 "></polygon>
-              </svg>New Course</h3>
-          </a></div>
+      <div className="grid-33">
+        <Link
+        to={{
+          pathname: `/courses/create`,
+          state: { from: location }
+        }}
+        className="course--module course--add--module" >
+      <h3 className="course--add--title"><svg version="1.1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
+          viewBox="0 0 13 13" className="add">
+          <polygon points="7,6 7,0 6,0 6,6 0,6 0,7 6,7 6,13 7,13 7,7 13,7 13,6 "></polygon>
+        </svg>New Course</h3>
+        </Link>
+      </div>
     );
     
     return (
-      <>
-
-          
+      <> 
         <div className="bounds">
           {/* Renders the courses */}
           {coursesJSX}
           {newCourseJSX}
           </div>
-         
       </>
     );
   }

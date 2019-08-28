@@ -100,6 +100,12 @@ router
   // POST - Create a course
   .post(authenticateUser, async (req, res, next) => {
     try {
+      // Get current authenticated user
+      const user = await req.currentUser.dataValues.id;
+
+      // IMPORTANT: This prevents a user from saving data to someone else's account. (And also would be needed if client didn't supply userId.)
+      req.body.userId = await user;
+
       // Creates and saves new course
       const course = await Course.create(req.body);
 
@@ -154,6 +160,8 @@ router
   // PUT - Update a course
   .put(authenticateUser, authenticateAccess, async (req, res, next) => {
     try {
+      // TO DO Does this section need to be changed to be like create a new course? Can a user supply a wrong userId and change ownership of a course?
+
       // Get course
       // IMPORTANT: Gets 'id' in params NOT 'id' in client JSON.
       // (For reliablity and security, use one source of truth for 'id'.)

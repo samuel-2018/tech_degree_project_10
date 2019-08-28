@@ -1,90 +1,75 @@
+import React, { Component } from "react";
+import { Link } from "react-router-dom";
 
-import React, {Component} from "react";
-import { Link } from 'react-router-dom'
+// For wrapping on export, provides context
+import { withContext } from "../helpers/context";
 
-// Consumer/'context' provides access to global context variables
-import { Consumer } from '../App.js';
-
-
+// TO DO change to FUNCTION (project specs page 4)
 class Header extends Component {
   render() {
     // Sets page title
     document.title = "Courses";
-// console.log('Header (this.props.location): ',this.props.location);
 
-    const { location } = this.props;
+    const { location, context } = this.props;
 
-    // console.log('Header (this.props)',this.props);
-    
-    // Sends App.js the current location
-    // prevPage(location.pathname);
-
-  
-    
-    function loginJSX(context) {
-      if (context.authenticatedUser) {
+    function loginJSX() {
+      if (!!context.authenticatedUser && !!context.user) {
         return (
           <nav>
-
-            <span>Welcome, {context.user.firstName + " " + context.user.lastName}!</span>
+            <span>
+              Welcome, {context.user.firstName + " " + context.user.lastName}!
+            </span>
 
             <Link
               to={{
-                pathname: `/`,
+                pathname: `/signout`,
                 state: { from: location }
               }}
-              className="signout" href="/">Sign Out
-              </Link>
-            
-          </nav>)
+              className="signout"
+            >
+              Sign Out
+            </Link>
+          </nav>
+        );
       } else {
         return (
           <nav>
-
             <Link
               to={{
                 pathname: `/signup`,
                 state: { from: location }
               }}
-              className="signup" >Sign Up
+              className="signup"
+            >
+              Sign Up
             </Link>
-            
+
             <Link
               to={{
                 pathname: `/signin`,
                 state: { from: location }
               }}
-              className="signin" >Sign In
-              </Link>
-            
+              className="signin"
+            >
+              Sign In
+            </Link>
           </nav>
-        )
+        );
       }
     }
 
     return (
-        <div className="header">
+      <div className="header">
         <div className="bounds">
           <h1 className="header--logo">
-            <Link
-              to={{pathname: `/courses` }}>Courses
-            </Link>
+            <Link to={{ pathname: `/courses` }}>Courses</Link>
           </h1>
-            <Consumer>
-              {
-                context => {
-                  return loginJSX(context);
-                }
-              }
-            </Consumer>
+          {loginJSX()}
         </div>
       </div>
-    )
+    );
   }
 }
 
-// NOTE this doesn't work
-// // Should be available as "this.context"
-// Header.contextType = Context;
-
-export default Header;
+// Wrapper provides context
+export default withContext(Header);

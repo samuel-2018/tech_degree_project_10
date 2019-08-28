@@ -1,7 +1,6 @@
-import React, {Component} from 'react';
+import React, { Component } from "react";
 // import logo from './logo.svg';
-import './global.css';
-import axios from "axios";
+import "./global.css";
 
 // Components
 import CourseDetail from "./components/CourseDetail";
@@ -12,83 +11,77 @@ import UpdateCourse from "./components/UpdateCourse";
 import UserSignIn from "./components/UserSignIn";
 import UserSignOut from "./components/UserSignOut";
 import UserSignUp from "./components/UserSignUp";
+import { NotFound } from "./components/NotFound";
+import { UnhandledError } from "./components/UnhandledError";
+import { Forbidden } from "./components/Forbidden";
 
 // Router
-import { BrowserRouter, Route, Switch, Redirect, withRouter } from "react-router-dom";
+import { Route, Switch, Redirect, withRouter } from "react-router-dom";
 
 // Provides Header access to location
 const HeaderwithRouter = withRouter(Header);
 
-// Context
-const Context = React.createContext();
-const {Provider, Consumer} = Context; 
-
 class App extends Component {
-
-  constructor() {
-    super();
-    this.state = {
-      authenticatedUser: false,
-      password: '',
-      user: {},
-    };
-
-    // this.prevPage = '/';
-
-    this.handleSetUser = this.handleSetUser.bind(this);
-    // this.handlePrevPage = this.handlePrevPage.bind(this);
-       
-  }
-
-  handleSetUser(user, password) {
-    this.setState({ user, password, authenticatedUser: true });
-  }
-
-  componentDidMount() {
-  console.log("******** App -- componentDidMount   **********");
-  
-}
-
-
   render() {
-    
-
     return (
-      <BrowserRouter>
-        <div className="App">
+      <div className="App">
+        <HeaderwithRouter />
 
-          <Provider value={{ ...this.state, handleSetUser: this.handleSetUser}} >
+        <Switch>
+          {/* TO DO would this also work: <Redirect exact path='/' to='/courses' /> */}
+          <Route exact path="/" render={() => <Redirect to="/courses" />} />
 
-            <HeaderwithRouter />
+          <Route exact path="/courses" render={() => <Courses />} />
 
-            <Switch>
-              <Route exact path="/" render={() => <Redirect to="/courses" />} />
+          <Route
+            exact
+            path="/courses/create"
+            render={props => <CreateCourse {...props} />}
+          />
 
-              <Route exact path="/courses" render={() => <Courses />} /> 
-              
-              <Route exact path="/courses/create" render={(props) => <CreateCourse {...props}/>} />
+          <Route
+            exact
+            path="/courses/:id/update"
+            render={props => (
+              <UpdateCourse id={props.match.params.id} {...props} />
+            )}
+          />
 
-              <Route exact path="/courses/:id/update" render={(props) => <UpdateCourse id={props.match.params.id} {...props}/>} />
+          <Route
+            path="/courses/:id"
+            render={props => (
+              <CourseDetail id={props.match.params.id} {...props} />
+            )}
+          />
 
-              <Route path="/courses/:id" render={(props) => <CourseDetail id={props.match.params.id} {...props} />} />
+          {/* Passing in 'props' is necessary so it has access to history. It has to be in the format of:  render={(props) => <SomeComponent {...props} />}. This will not work: <SomeComponent history={props.history} />}   */}
 
-              {/* Passing in 'props' is necessary so it has access to history. It has to be in the format of:  render={(props) => <SomeComponent {...props} />}. This will not work: <SomeComponent history={props.history} />}   */}
+          <Route
+            exact
+            path="/signin"
+            render={props => <UserSignIn {...props} />}
+          />
 
-              <Route exact path="/signin" render={(props) => <UserSignIn   {...props} />} />
-              
-              <Route exact path="/signup" render={(props)=><UserSignUp {...props} />} />
-              <Route exact path="/signout" render={()=><UserSignOut />} />
-     
-            </Switch>
-          </Provider>
-        </div>
-      </BrowserRouter>
+          <Route
+            exact
+            path="/signup"
+            render={props => <UserSignUp {...props} />}
+          />
+          <Route exact path="/signout" render={() => <UserSignOut />} />
 
-  );
-}
-  
+          {/* Error routes */}
+
+          <Route exact path="/forbidden" render={() => <Forbidden />} />
+
+          <Route exact path="/error" render={() => <UnhandledError />} />
+
+          <Route exact path="/notfound" render={() => <NotFound />} />
+
+          <Route path="/" render={() => <NotFound />} />
+        </Switch>
+      </div>
+    );
+  }
 }
 
 export default App;
-
-export {Consumer};

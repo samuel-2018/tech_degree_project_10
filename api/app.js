@@ -1,10 +1,11 @@
 // load modules
-const express = require('express');
-const cors = require('cors');
-const morgan = require('morgan');
+const express = require("express");
+const cors = require("cors");
+const morgan = require("morgan");
 
 // variable to enable global error logging
-const enableGlobalErrorLogging = process.env.ENABLE_GLOBAL_ERROR_LOGGING === 'true';
+const enableGlobalErrorLogging =
+  process.env.ENABLE_GLOBAL_ERROR_LOGGING === "true";
 
 // create the Express app
 const app = express();
@@ -16,21 +17,21 @@ app.use(express.json());
 app.use(cors());
 
 // setup morgan which gives us http request logging
-app.use(morgan('dev'));
+app.use(morgan("dev"));
 
 // API routes
-const indexRouter = require('./routes/index');
-const usersRouter = require('./routes/users');
-const coursesRouter = require('./routes/courses');
+const indexRouter = require("./routes/index");
+const usersRouter = require("./routes/users");
+const coursesRouter = require("./routes/courses");
 
-app.use('/api', indexRouter);
-app.use('/api/users', usersRouter);
-app.use('/api/courses', coursesRouter);
+app.use("/api", indexRouter);
+app.use("/api/users", usersRouter);
+app.use("/api/courses", coursesRouter);
 
 // send 404 if no other route matched
 app.use((req, res) => {
   res.status(404).json({
-    message: 'Route Not Found',
+    message: "Route Not Found"
   });
 });
 
@@ -40,16 +41,36 @@ app.use((err, req, res, next) => {
     console.error(`Global error handler: ${JSON.stringify(err.stack)}`);
   }
 
+  // TO DO add handling for this case?
+  // 'SequelizeUniqueConstraintError'
+  // If client doesn't supply a userId, API will respond with
+  // "SQLITE_CONSTRAINT: FOREIGN KEY constraint failed"
+
+  // Create client-friendly validation errors
+  let validationErrors = null;
+  if (err.errors && err.name === "SequelizeValidationError") {
+    validationErrors = err.errors.map((error, index) => {
+      return {
+        message: error.message,
+        type: error.type,
+        path: error.path,
+        validatorName: error.validatorName
+      };
+    });
+  }
+
   res.status(err.status || 500).json({
     message: err.message,
-    // error: {},
+    name: err.name,
+    validationErrors
+    // error: {}
   });
 });
 
 // set our port
-app.set('port', process.env.PORT || 5000);
+app.set("port", process.env.PORT || 5000);
 
 // start listening on our port
-const server = app.listen(app.get('port'), () => {
+const server = app.listen(app.get("port"), () => {
   console.log(`Express server is listening on port ${server.address().port}`);
 });

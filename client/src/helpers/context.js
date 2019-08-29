@@ -15,6 +15,7 @@ import config from "../config";
 const Context = React.createContext();
 
 class Provider extends Component {
+  // Note: Provider does not have access to location or history.
   constructor(props) {
     super(props);
     this.state = {
@@ -44,14 +45,6 @@ class Provider extends Component {
         this.setCookies({ username, password });
       }
     );
-    // .then(() => {
-    //   // Note: Provider does not have access to location, so can't handle some redirects.
-
-    //   // return to caller
-    //   return;
-    //   // // ('Redirect' has to be returned to render.)
-    //   // return <Redirect push to={this.props.location.state.from.pathname} />;
-    // });
   };
 
   onSignOut = () => {
@@ -162,9 +155,7 @@ class Provider extends Component {
 }
 
 function withContext(OriginalComponent) {
-  return function ContextComponent(props) {
-    // TO DO may need wrapped in a function, takes in props, and then spreads them in below component. DONE
-    // And, why does this make it work?
+  return function(props) {
     return (
       <Context.Consumer>
         {context => <OriginalComponent {...props} context={context} />}

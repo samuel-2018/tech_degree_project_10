@@ -1,6 +1,4 @@
 import axios from "axios";
-import React from "react";
-import { Redirect } from "react-router-dom";
 
 // AXIOS: https://github.com/axios/axios
 

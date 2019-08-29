@@ -29,10 +29,6 @@ class UserSignIn extends Component {
     this.props.context
       .onSignIn({ username, password })
       .then(() => {
-        // // ('Redirect' has to be returned to render.)
-        // DIDN'T WORK
-        // return <Redirect push to={this.props.location.state.from.pathname} />;
-
         this.props.history.push(this.props.location.state.from.pathname);
       })
       .catch(error => {

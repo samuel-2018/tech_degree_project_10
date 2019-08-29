@@ -11,18 +11,27 @@ export const validationErrors = validationErrors => {
           <div className="validation-errors">
             <ul>
               {/* Displays validation errors */}
-              {validationErrors.map(error => {
+              {validationErrors.map((error, index) => {
                 // Is the error a "notEmpty" violation?
                 if (error.validatorName === "notEmpty") {
                   return (
-                    <li>
+                    <li key={index}>
                       Please provide a value for "
                       {/* 'path' contains the database field name */}
-                      <span className="capitalize">{error.path}</span>."
+                      <span className="capitalize">
+                        {error.path.split(/(?=[A-Z])/).join(" ")}
+                      </span>
+                      ."
                     </li>
                   );
+                } else if (error.validatorName === "isEmail") {
+                  return (
+                    <li key={index}>Please provide a valid email address.</li>
+                  );
                 }
-                return "Something went wrong. Please try again.";
+                return (
+                  <li key={index}>Something went wrong. Please try again.</li>
+                );
               })}
             </ul>
           </div>

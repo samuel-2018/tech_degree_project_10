@@ -1,9 +1,5 @@
 import React, { Component } from "react";
-import Header from "./Header";
-import axios from "axios";
 import { Link } from "react-router-dom";
-// Base URL
-import config from "../config";
 
 // For wrapping on export, provides context
 import { withContext } from "../helpers/context";
@@ -57,7 +53,7 @@ class UserSignUp extends Component {
     this.props.history.push(`/courses`);
   };
   render() {
-    const { location, context } = this.props;
+    const { location } = this.props;
 
     return (
       <div className="bounds">
@@ -120,11 +116,14 @@ class UserSignUp extends Component {
                 </div>
               </div>
 
-              <div class="grid-100 pad-bottom">
-                <button class="button" type="submit">
+              <div className="grid-100 pad-bottom">
+                <button className="button" type="submit">
                   Sign Up
                 </button>
-                <button class="button button-secondary" onClick={this.onCancel}>
+                <button
+                  className="button button-secondary"
+                  onClick={this.onCancel}
+                >
                   Cancel
                 </button>
               </div>

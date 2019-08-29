@@ -299,12 +299,17 @@ p {
   margin-bottom: 30px;
 }
 
+/*******************************************
+               MEDIA QUERIES               */
+/* Base styles, mobile first ***************/
+
 /* line 70, ../sass/global.sass */
 .bounds {
   max-width: 1250px;
   margin: 0 auto;
+  padding-left: 5px;
+  padding-right: 5px;
 }
-
 /* line 74, ../sass/global.sass */
 .grid,
 .grid-25,
@@ -315,26 +320,64 @@ p {
   padding: 0 15px;
   box-sizing: border-box;
 }
-/* line 78, ../sass/global.sass */
-.grid-25 {
-  width: 25%;
-}
-/* line 81, ../sass/global.sass */
-.grid-33 {
-  width: 33.3%;
-}
-/* line 84, ../sass/global.sass */
+
+.grid-25,
+.grid-33,
 .grid-66 {
-  width: 66.6%;
+  width: 100%;
+  /* .grid-25 rule used by sidebar */
+  /* .grid-33 rule used by course-module buttons*/
+  /* .grid-66 rule used by course details */
 }
-/* line 87, ../sass/global.sass */
+
 .grid-100 {
   width: 100%;
+  /* rule used as a wrapper for many things */
 }
-/* line 90, ../sass/global.sass */
+
 .grid-right {
-  float: right;
+  float: none;
 }
+
+.main-nav {
+  padding-right: 10px;
+}
+
+/* Medium devices **************************/
+@media (min-width: 768px) {
+  .grid-33 {
+    width: 50%;
+    /* .grid-33 rule used by course-module buttons*/
+  }
+  .grid-25 {
+    width: 30%;
+    /* rule used by sidebar */
+  }
+  .grid-66 {
+    width: 66.6%;
+    /* .grid-66 rule used by course details */
+  }
+  .grid-right {
+    float: right;
+  }
+}
+
+/* Large devices ***************************/
+@media (min-width: 1250px) {
+  /* line 78, ../sass/global.sass */
+  .grid-25 {
+    width: 25%;
+    /* rule used by sidebar */
+  }
+  /* line 81, ../sass/global.sass */
+  .grid-33 {
+    width: 33.3%;
+    /* .grid-33 rule used by course-module buttons*/
+  }
+  /* line 84, ../sass/global.sass */
+}
+
+/************ END MEDIA QUERIES ************               
 
 /* line 93, ../sass/global.sass */
 .centered {
@@ -701,6 +744,8 @@ input:focus {
   -ms-transition: background 0.2s;
   -o-transition: background 0.2s;
   transition: background 0.2s;
+  margin-bottom: 10px;
+  width: 200px;
 }
 /* line 520, ../sass/global.sass */
 .button:focus {
@@ -754,12 +799,17 @@ input:focus {
   padding: 15px 0 40px 10px;
 }
 
+/* styles the validation errors */
+.capitalize {
+  text-transform: capitalize;
+}
+
 /* reduce bottom margin on the course description textarea element */
 .course--description textarea {
   margin-bottom: 20px;
 }
 
-/* ************* */
+/* styles client-side validation (password mismatch) */
 .error-msg {
   margin: -10px 0 15px;
   padding: 0 15px;
@@ -767,7 +817,4 @@ input:focus {
 }
 .hide {
   display: none;
-}
-.capitalize {
-  text-transform: capitalize;
 }

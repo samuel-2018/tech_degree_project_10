@@ -1,20 +1,23 @@
-import React, { Component } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 
 // For wrapping on export, provides context
 import { withContext } from "../helpers/context";
 
-// TO DO change to FUNCTION (project specs page 4)
-class Header extends Component {
-  render() {
-    // Sets page title
-    document.title = "Courses";
+const Header = props => {
+  // Sets page title
+  document.title = "Courses";
 
-    const { location, context } = this.props;
+  const { location, context } = props;
 
-    function loginJSX() {
-      if (!!context.authenticatedUser && !!context.user) {
-        return (
+  return (
+    <div className="header">
+      <div className="bounds">
+        <h1 className="header--logo">
+          <Link to={{ pathname: `/courses` }}>Courses</Link>
+        </h1>
+
+        {!!context.authenticatedUser && !!context.user ? (
           <nav>
             <span>
               Welcome, {context.user.firstName + " " + context.user.lastName}!
@@ -30,9 +33,7 @@ class Header extends Component {
               Sign Out
             </Link>
           </nav>
-        );
-      } else {
-        return (
+        ) : (
           <nav>
             <Link
               to={{
@@ -54,22 +55,11 @@ class Header extends Component {
               Sign In
             </Link>
           </nav>
-        );
-      }
-    }
-
-    return (
-      <div className="header">
-        <div className="bounds">
-          <h1 className="header--logo">
-            <Link to={{ pathname: `/courses` }}>Courses</Link>
-          </h1>
-          {loginJSX()}
-        </div>
+        )}
       </div>
-    );
-  }
-}
+    </div>
+  );
+};
 
 // Wrapper provides context
 export default withContext(Header);

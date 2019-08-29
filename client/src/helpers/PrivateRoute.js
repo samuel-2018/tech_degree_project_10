@@ -1,13 +1,12 @@
 // Enables access to global state
 import { Consumer } from "./context";
 
-import React, { Component } from "react";
+import React from "react";
 import { Route, Redirect } from "react-router-dom";
 
 // HOC
 function PrivateRoute(OriginalComponent) {
   return function(...props) {
-    const { location } = props;
     return (
       <Consumer>
         {context => {
@@ -23,7 +22,7 @@ function PrivateRoute(OriginalComponent) {
                   <Redirect
                     to={{
                       pathname: `/signin`,
-                      state: { from: location }
+                      state: { from: props.location }
                     }}
                   />
                 )

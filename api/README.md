@@ -1,4 +1,4 @@
-# Project 9: REST API (Tech Degree)
+# API: Full Stack App with React and a REST API (Tech Degree)
 
 ## Description
 
@@ -41,17 +41,38 @@ To test the Express server, browse to the URL [http://localhost:5000/](http://lo
 
 You can also use [Postman](https://www.getpostman.com/) for testing, using the file `RESTAPI.postman_collection.json`. The database can be viewed using [DB Browser for SQLite](https://sqlitebrowser.org/).
 
-## API Reference (HTTP METHOD Route)
+## API Reference
 
-Note: All course ids must be supplied via the URL parameter.
+Note: All course ids must be supplied via the route parameter.
 
 ### Get currently authenticated user
 
+#### HTTP METHOD Route
+
 `GET /api/users`
+
+#### Response body
+
+```
+{
+    "user": {
+        "id": 1,
+        "firstName": "Joe",
+        "lastName": "Smith",
+        "emailAddress": "joe@smith.com"
+    }
+}
+```
+
+---
 
 ### Create a user account
 
+#### HTTP METHOD Route
+
 `POST /api/users`
+
+#### Request body
 
 ```
 {
@@ -62,40 +83,77 @@ Note: All course ids must be supplied via the URL parameter.
 }
 ```
 
+---
+
 ### Get all courses
+
+#### HTTP METHOD Route
 
 `GET /api/courses`
 
+---
+
 ### Get one course
+
+#### HTTP METHOD Route
 
 `GET /api/courses/:id`
 
+#### Response body
+
+```
+{
+    id: 1,
+    title: "Learn How to Program",
+    description: "In this course, you'll learn how to write code like a pro!",
+    estimatedTime: "6 hours",
+    materialsNeeded: "* Notebook computer running Mac OS X or Windows * Text editor",
+    userId: 2
+}
+```
+
+---
+
 ### Create a course
 
+#### HTTP METHOD Route
+
 `POST /api/courses`
+
+#### Request body
 
 ```
 {
     "title": "New Course",
     "description": "My course description",
     "estimatedTime": “6 hours”,
-    "estimatedTime": “* Notebook computer running Mac OS X or Windows * Text editor”,
+    "materialsNeeded": “* Notebook computer running Mac OS X or Windows * Text editor”,
 }
 ```
 
+---
+
 ### Update a course
 
+#### HTTP METHOD Route
+
 `PUT /api/courses/:id`
+
+#### Request body
 
 ```
 {
     "title": "New Course Updated4 Again Hello",
     "description": "My course description. And again.",
     "estimatedTime": “6 hours”,
-    "estimatedTime": “* Notebook computer running Mac OS X or Windows * Text editor”,
+    "materialsNeeded": “* Notebook computer running Mac OS X or Windows * Text editor”,
 }
 ```
 
+---
+
 ### Delete a course
+
+#### HTTP METHOD Route
 
 `DELETE /api/courses/:id`

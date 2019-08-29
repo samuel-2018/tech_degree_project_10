@@ -1,13 +1,12 @@
-const express = require('express');
+const express = require("express");
 
 const router = express.Router();
 
 // Sanitization middlewares
-const { sanitizeBody } = require('express-validator');
-const { sanitizeParam } = require('express-validator');
+const { body, param } = require("express-validator");
 
 // Database access
-const { models } = require('../db');
+const { models } = require("../db");
 
 const { Course } = models;
 
@@ -16,15 +15,15 @@ const { Course } = models;
 // ========================================
 
 // Error: Course not found
-const courseNotFound = new Error('Course not found.');
+const courseNotFound = new Error("Course not found.");
 courseNotFound.status = 404;
 
 // Error: Forbidden
-const forbidden = new Error('Forbidden.');
+const forbidden = new Error("Forbidden.");
 forbidden.status = 403;
 
 // Authenticate user
-const authenticateUser = require('../helpers/authenticateUser');
+const authenticateUser = require("../helpers/authenticateUser");
 
 // Authenticate access
 const authenticateAccess = async (req, res, next) => {
@@ -61,20 +60,43 @@ const authenticateAccess = async (req, res, next) => {
 // ROUTES
 // ========================================
 
-// Sanitize user input
-// (Will mutate data)
+// SECURITY NOTES
+
+// With v5, setting "operatorsAliases: false" is not needed.
+// "This is a no-op with v5 and should be removed."
+
+// "By default Sequelize will use Symbol operators.
+// Using Sequelize without any aliases improves security.
+// Not having any string aliases will make it extremely
+// unlikely that operators could be injected but you
+// should always properly validate and sanitize user input.""
+
+// "Some frameworks automatically parse user input into js objects
+// and if you fail to sanitize your input it might be possible to
+// inject an Object with string operators to Sequelize."
+// https://sequelize.org/master/manual/querying.html#operators-security
+
+// Modifying user input
+// (".escape()" would mutate data: <, >, &, ', " and /.)
+// API https://express-validator.github.io/docs/sanitization.html
+// and https://flaviocopes.com/express-sanitize-input/
+
+// The client side must assume that all data is unsafe.
+
 router.use([
-  sanitizeBody(['title', 'estimatedTime', 'materialsNeeded', 'description'])
+  body(["title", "estimatedTime", "materialsNeeded", "description"])
+    // Removes leading and trailing whitespace
+    .trim(),
+  param(["id"])
+    // Removes leading and trailing whitespace
     .trim()
-    .escape(),
-  sanitizeParam(['id'])
-    .trim()
-    .escape(),
+    // Converts to number or NaN.
+    .toInt()
 ]);
 
 // ROUTE - api/courses
 router
-  .route('/')
+  .route("/")
 
   // GET - List of courses
   .get(async (req, res, next) => {
@@ -82,13 +104,13 @@ router
     try {
       // All courses, data includes userId
       const result = await Course.findAll({
-        attributes: { exclude: ['createdAt', 'updatedAt'] },
+        attributes: { exclude: ["createdAt", "updatedAt"] }
       });
 
       res.status(200).json(result);
     } catch (error) {
       // Catches validation errors sent from Sequelize
-      if (error.name === 'SequelizeValidationError') {
+      if (error.name === "SequelizeValidationError") {
         // Bad Request
         // msg assigned by Sequelize
         error.status = 400;
@@ -114,12 +136,12 @@ router
 
       res.writeHead(201, {
         // URI for the course
-        Location: `/api/courses/${courseId}`,
+        Location: `/api/courses/${courseId}`
       });
       res.end();
     } catch (error) {
       // Catches validation errors sent from Sequelize
-      if (error.name === 'SequelizeValidationError') {
+      if (error.name === "SequelizeValidationError") {
         // Bad Request
         // Message assigned by Sequelize
         error.status = 400;
@@ -130,7 +152,7 @@ router
 
 // ROUTE - api/courses/#
 router
-  .route('/:id')
+  .route("/:id")
   // GET - One course
   .get(async (req, res, next) => {
     try {
@@ -138,7 +160,16 @@ router
 
       // course, data includes userId
       const result = await Course.findByPk(req.params.id, {
-        attributes: { exclude: ['createdAt', 'updatedAt'] },
+        attributes: {
+          exclude: ["createdAt", "updatedAt"]
+        },
+        // Includes the course owner's name.
+        include: [
+          {
+            model: models.User,
+            attributes: ["firstName", "lastName"]
+          }
+        ]
       });
       if (result) {
         // Returns course
@@ -148,7 +179,7 @@ router
       }
     } catch (error) {
       // Catches validation errors sent from Sequelize
-      if (error.name === 'SequelizeValidationError') {
+      if (error.name === "SequelizeValidationError") {
         // Bad Request
         // msg assigned by Sequelize
         error.status = 400;
@@ -198,7 +229,7 @@ router
       }
     } catch (error) {
       // Catches validation errors sent from Sequelize
-      if (error.name === 'SequelizeValidationError') {
+      if (error.name === "SequelizeValidationError") {
         // Bad Request
         // Message assigned by Sequelize
         error.status = 400;
@@ -225,12 +256,12 @@ router
       res.writeHead(204, {
         // BUG? '/' is the project requirement... but '/api' would be more useful
         // https://app.slack.com/client/TBPQFGEAH/CBPRYGLSZ/thread/CBPRYGLSZ-1563967481.032400
-        Location: '/',
+        Location: "/"
       });
       res.end();
     } catch (error) {
       // Catches validation errors sent from Sequelize
-      if (error.name === 'SequelizeValidationError') {
+      if (error.name === "SequelizeValidationError") {
         // Bad Request
         // Message assigned by Sequelize
         error.status = 400;

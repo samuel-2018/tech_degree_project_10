@@ -28,10 +28,15 @@ class App extends Component {
         <HeaderwithRouter />
 
         <Switch>
-          {/* TO DO would this also work: <Redirect exact path='/' to='/courses' /> */}
-          <Route exact path="/" render={() => <Redirect to="/courses" />} />
+          {/* Passing in 'props' is necessary so it has access to history. It has to be in the format of:  render={(props) => <SomeComponent {...props} />}. This will not work: <SomeComponent history={props.history} />}. Any component that handles redirecting needs access to history. This includes those that make an API call and use 'handleError.js'. The error handler gets history from the callers props.  */}
 
-          <Route exact path="/courses" render={() => <Courses />} />
+          <Redirect exact path="/" to="/courses" />
+
+          <Route
+            exact
+            path="/courses"
+            render={props => <Courses {...props} />}
+          />
 
           <Route
             exact
@@ -42,9 +47,7 @@ class App extends Component {
           <Route
             exact
             path="/courses/:id/update"
-            render={props => (
-              <UpdateCourse id={props.match.params.id} {...props} />
-            )}
+            render={props => <UpdateCourse {...props} />}
           />
 
           <Route
@@ -53,8 +56,6 @@ class App extends Component {
               <CourseDetail id={props.match.params.id} {...props} />
             )}
           />
-
-          {/* Passing in 'props' is necessary so it has access to history. It has to be in the format of:  render={(props) => <SomeComponent {...props} />}. This will not work: <SomeComponent history={props.history} />}   */}
 
           <Route
             exact
@@ -67,6 +68,7 @@ class App extends Component {
             path="/signup"
             render={props => <UserSignUp {...props} />}
           />
+
           <Route exact path="/signout" render={() => <UserSignOut />} />
 
           {/* Error routes */}

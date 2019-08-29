@@ -1,8 +1,6 @@
 import React, { Component } from "react";
-import { Redirect } from "react-router-dom";
-import Header from "./Header";
-import axios from "axios";
 import { Link } from "react-router-dom";
+import ReactMarkdown from "react-markdown";
 
 // For wrapping on export, provides context
 import { withContext } from "../helpers/context";
@@ -123,19 +121,13 @@ class CourseDetail extends Component {
     const courseDetailJSX = () => {
       if (this.state.course) {
         const {
-          id,
           title,
           description,
           estimatedTime,
           materialsNeeded,
-          userId
+          User
         } = this.state.course;
-        // Creates an array of paragraphs (splits at hard return)
-        const paragraphs = description.split(/&#13;/);
-
-        // Creates an array of materials (splits at "*")
-        const materials = materialsNeeded.split(/\*/);
-        console.log("materials: ", materials);
+        const courseOwnerName = `${User.firstName} ${User.lastName}`;
 
         return (
           <div className="bounds course--detail">
@@ -143,13 +135,10 @@ class CourseDetail extends Component {
               <div className="course--header">
                 <h4 className="course--label">Course</h4>
                 <h3 className="course--title">{title}</h3>
-                <p>By {userId}</p>
+                <p>By {courseOwnerName}</p>
               </div>
               <div className="course--description">
-                {// Converts the paragraphs array into JSX
-                paragraphs.map((paragraph, index) => {
-                  return <p key={index}>{paragraph}</p>;
-                })}
+                <ReactMarkdown source={description} />
               </div>
             </div>
             <div className="grid-25 grid-right">
@@ -162,10 +151,7 @@ class CourseDetail extends Component {
                   <li className="course--stats--list--item">
                     <h4>Materials Needed</h4>
                     <ul>
-                      {// // Converts the paragraphs array into JSX
-                      materials.map((material, index) => {
-                        return <li key={index}>{material}</li>;
-                      })}
+                      <ReactMarkdown source={materialsNeeded} />
                     </ul>
                   </li>
                 </ul>

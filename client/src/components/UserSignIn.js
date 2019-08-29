@@ -8,13 +8,6 @@ import { getFormData } from "../helpers/getFormData";
 import { handleError } from "../helpers/handleError";
 
 class UserSignIn extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      context: this.props.context
-    };
-  }
-
   onSubmit = event => {
     // prevents the page from re-loading
     event.preventDefault();
@@ -87,7 +80,6 @@ class UserSignIn extends Component {
 
   onCancel = () => {
     // Redirects to main page
-    // Note: In the router file, passing 'props' is necessary so this file has access to history.
     this.props.history.push(`/courses`);
   };
 

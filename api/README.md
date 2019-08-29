@@ -13,7 +13,6 @@ Technologies used in this project include Node.js, Express, and Sequelize.
 - GET /api/users route and /api/courses route filter out unneeded properties.
 - Only the owner of a course can modify or delete that course.
 - Only valid, unique email addresses can be used to create a user account.
-- User input is sanitized.
 
 ## Getting Started
 

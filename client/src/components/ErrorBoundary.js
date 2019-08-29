@@ -1,7 +1,7 @@
 import React from "react";
 import { Redirect } from "react-router-dom";
 
-// NOTE: In development mode, the custom error page will only briefly show before going to the normal error page. Check the address bar to see which page would be rendered in production.
+// NOTE: In development mode, the custom error page may only briefly show before going to the normal error page. Check the address bar to see which page would be rendered in production.
 
 export class ErrorBoundary extends React.Component {
   constructor(props) {

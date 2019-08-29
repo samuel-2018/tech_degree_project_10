@@ -9,7 +9,7 @@ import config from "../config";
 // import { PrivateRoute, getFormData, sendRequest } from '../helpers';
 import { getFormData } from "../helpers/getFormData";
 import { sendRequest } from "../helpers/sendRequest";
-import { PrivateRoute } from "../helpers/PrivateRoute";
+import PrivateRoute from "../helpers/PrivateRoute";
 import { validationErrors } from "../helpers/validationErrors";
 import { handleError } from "../helpers/handleError";
 
@@ -25,7 +25,7 @@ class UpdateCourse extends Component {
 
   componentDidMount() {
     // Get course ID #
-    const id = this.props.id;
+    const id = this.props.match.params.id;
 
     // Get course from api
     axios
@@ -54,7 +54,7 @@ class UpdateCourse extends Component {
       const data = getFormData(event.target);
 
       // Get course ID #
-      const id = this.props.id;
+      const id = this.props.match.params.id;
 
       // get authorization info from global
       const { username, password } = this.props.context.authenticatedUser;
@@ -84,8 +84,10 @@ class UpdateCourse extends Component {
           title,
           description,
           estimatedTime,
-          materialsNeeded
+          materialsNeeded,
+          User
         } = this.state.course;
+        const courseOwnerName = `${User.firstName} ${User.lastName}`;
 
         // Does the current user own this course?
         if (!(authenticatedUser && currentUserId === courseOwnerId)) {
@@ -114,7 +116,7 @@ class UpdateCourse extends Component {
                           defaultValue={title}
                         />
                       </div>
-                      <p>By {courseOwnerId}</p>
+                      <p>By {courseOwnerName}</p>
                     </div>
                     <div className="course--description">
                       <div>

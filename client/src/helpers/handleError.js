@@ -33,7 +33,6 @@ export const handleError = ({ error, callerThis }) => {
 
       callerThis.props.history.replace(`/error`);
     }
-    callerThis.props.history.replace(`/error`);
   } catch (error) {
     // Handles errors created in the error handler
     window.location.pathname = "/error";

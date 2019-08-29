@@ -1,6 +1,4 @@
 import React, { Component } from "react";
-import Header from "./Header";
-import axios from "axios";
 // Base URL
 import config from "../config";
 
@@ -133,7 +131,6 @@ class CreateCourse extends Component {
 
   onCancel = () => {
     // Redirects to main page
-    // Note: In the router file, passing 'props' is necessary so this file has access to history.
     this.props.history.push(`/courses`);
   };
   render() {

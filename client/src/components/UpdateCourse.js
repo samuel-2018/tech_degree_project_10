@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { Redirect } from "react-router-dom";
-import Header from "./Header";
 import axios from "axios";
 // Base URL
 import config from "../config";

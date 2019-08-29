@@ -1,15 +1,15 @@
 // Enables hashing of passwords
-const bcryptjs = require('bcryptjs');
+const bcryptjs = require("bcryptjs");
 
-const express = require('express');
+const express = require("express");
 
 const router = express.Router();
 
 // Sanitization middleware
-const { sanitizeBody } = require('express-validator');
+const { sanitizeBody, body } = require("express-validator");
 
 // Database access
-const { sequelize, models } = require('../db');
+const { sequelize, models } = require("../db");
 
 const { User } = models;
 
@@ -20,22 +20,34 @@ const { Op } = sequelize;
 //  HELPER FUNCTIONS
 // ========================================
 
-const authenticateUser = require('../helpers/authenticateUser');
+const authenticateUser = require("../helpers/authenticateUser");
 
 // ========================================
 // ROUTES
 // ========================================
 
-// Sanitize user input (except 'password')
-// (Will mutate data)
+// Modifying user input
+// (".escape()" will mutate data: <, >, &, ', " and /.)
+// API https://express-validator.github.io/docs/sanitization.html
+// and https://flaviocopes.com/express-sanitize-input/
+
+// The client side must assume that all data is unsafe.
+
 router.use([
-  sanitizeBody(['firstName', 'lastName', 'emailAddress'])
+  body("emailAddress")
+    // Removes leading and trailing whitespace
     .trim()
-    .escape(),
+    // Sanitizes
+    .escape()
+    // Converts email to lowercase
+    .normalizeEmail(),
+
+  // Removes leading and trailing whitespace
+  body(["firstName", "lastName", "password"]).trim()
 ]);
 
 router
-  .route('/')
+  .route("/")
   // Get current authenticated user
   .get(authenticateUser, async (req, res, next) => {
     //
@@ -64,14 +76,14 @@ router
       res.writeHead(201, {
         // BUG? '/' is the project requirement... but '/api' would be more useful
         // https://app.slack.com/client/TBPQFGEAH/CBPRYGLSZ/thread/CBPRYGLSZ-1563967481.032400
-        Location: '/',
+        Location: "/"
       });
       res.end();
     } catch (error) {
       // Catches validation errors sent from Sequelize
       if (
-        error.name === 'SequelizeValidationError'
-        || error.name === 'SequelizeUniqueConstraintError'
+        error.name === "SequelizeValidationError" ||
+        error.name === "SequelizeUniqueConstraintError"
       ) {
         // Bad Request
         // msg assigned by Sequelize

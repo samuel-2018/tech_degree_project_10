@@ -8,7 +8,7 @@ import config from "../config";
 // import { PrivateRoute, getFormData, sendRequest } from '../helpers';
 import { getFormData } from "../helpers/getFormData";
 import { sendRequest } from "../helpers/sendRequest";
-import { PrivateRoute } from "../helpers/PrivateRoute";
+import PrivateRoute from "../helpers/PrivateRoute";
 import { validationErrors } from "../helpers/validationErrors";
 import { handleError } from "../helpers/handleError";
 

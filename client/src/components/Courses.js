@@ -46,7 +46,9 @@ class Courses extends Component {
               className="course--module course--link"
             >
               <h4 className="course--label">Course</h4>
-              <h3 className="course--title">{course.title}</h3>
+              <h3 className="course--title course--module--title">
+                {course.title}
+              </h3>
             </Link>
           </div>
         );

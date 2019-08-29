@@ -18,7 +18,7 @@ const Header = props => {
         </h1>
 
         {!!context.authenticatedUser && !!context.user ? (
-          <nav>
+          <nav className="main-nav">
             <span>
               Welcome, {context.user.firstName + " " + context.user.lastName}!
             </span>
@@ -34,7 +34,7 @@ const Header = props => {
             </Link>
           </nav>
         ) : (
-          <nav>
+          <nav className="main-nav">
             <Link
               to={{
                 pathname: `/signup`,

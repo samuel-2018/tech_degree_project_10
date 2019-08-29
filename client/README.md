@@ -1,3 +1,29 @@
+# CLIENT: Full Stack App with React and a REST API (Tech Degree)
+
+## Description
+
+The client side of this application displays a simple, responsive design.
+
+The main page shows a list of all the courses retrieved from the REST API. Users can click on a course to view details.
+
+After creating an account or signing in, the user can also upload courses. The “course description” and “materials needed” portions accept markdown formatting. Modifying or deleting a course is restricted to the owner of the course.
+
+Once a user has signed in, the user’s credentials are stored in the browser’s session as well as in an HTTP cookie. This allows the user’s authentication to persist even after closing and reopening the browser. Clicking the sign out button removes the user’s credentials from the active session and deletes the cookie.
+
+Technologies used in this project include React, JSX, React Router, React Context API, React Markdown, Create React App, and Axios.
+
+(The project’s CSS file was adapted from the file supplied for this project. The example HTML markup files were referenced when creating the React templates.)
+
+## "Extra Credit" Features
+
+- Routes and stateless functional components for displaying: “Not Found”, “Forbidden”, and, for unhandled errors, “Error”.
+
+- HTTP cookie for persisting user credentials.
+
+- Redirect for when a user successfully signs in after trying to view a protected route.
+
+# Create React App Readme
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts

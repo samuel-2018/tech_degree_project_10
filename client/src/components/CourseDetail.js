@@ -80,7 +80,7 @@ class CourseDetail extends Component {
             <div className="bounds">
               <div className="grid-100">
                 {authenticatedUser && userId === courseOwnerId && (
-                  <span>
+                  <>
                     <Link
                       to={{
                         pathname: `/courses/${id}/update`,
@@ -100,7 +100,7 @@ class CourseDetail extends Component {
                     >
                       Delete Course
                     </Link>
-                  </span>
+                  </>
                 )}
                 <Link
                   to={{

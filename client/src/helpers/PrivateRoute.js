@@ -6,7 +6,7 @@ import { Route, Redirect } from "react-router-dom";
 
 // HOC
 function PrivateRoute(OriginalComponent) {
-  return function(...props) {
+  return function() {
     return (
       <Consumer>
         {context => {

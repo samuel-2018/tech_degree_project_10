@@ -1,17 +1,17 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { BrowserRouter } from "react-router-dom";
-
-// import './index.css';
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
-
 import { Provider } from "./helpers/context";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 
 ReactDOM.render(
   <BrowserRouter>
+    {/* "ErrorBoundary" catches some errors in child components
+         and renders a fallback UI: "/error". */}
     <ErrorBoundary>
+      {/* "Provider" allows global state. */}
       <Provider>
         <App />
       </Provider>

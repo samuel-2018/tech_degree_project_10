@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import axios from "axios";
+import { sendRequest } from "../helpers/sendRequest";
 import { handleError } from "../helpers/handleError";
 
 class Courses extends Component {
@@ -12,19 +12,22 @@ class Courses extends Component {
   }
 
   componentDidMount() {
-    // Get courses from api
-    axios
-      .get("http://localhost:5000/api/courses")
-      .then(result => {
-        // store data in state
-        this.setState({
-          courses: result.data
+    // Calls API, updates state with courses data.
+    // (Updating state must be done outside of render.)
+    (() => {
+      const url = "http://localhost:5000/api/courses";
+
+      sendRequest({ url, method: "GET" })
+        .then(result => {
+          // Stores data in state.
+          this.setState({
+            courses: result.data
+          });
+        })
+        .catch(error => {
+          handleError({ error, callerThis: this });
         });
-      })
-      .catch(error => {
-        const callerThis = this;
-        handleError({ error, callerThis });
-      });
+    })();
   }
 
   render() {
@@ -55,7 +58,7 @@ class Courses extends Component {
       });
     }
 
-    // builds a create new course button/box
+    // Builds a create new course button/box
     const newCourseJSX = (
       <div className="grid-33">
         <Link

@@ -1,83 +1,93 @@
 import React, { Component } from "react";
 import { Redirect } from "react-router-dom";
-import axios from "axios";
-// Base URL
+// Base URL: config.apiBaseUrl
 import config from "../config";
-
-// PrivateRoute: Enables restricting page to signed-in users
-// import { PrivateRoute, getFormData, sendRequest } from '../helpers';
+// Helper functions
 import { getFormData } from "../helpers/getFormData";
 import { sendRequest } from "../helpers/sendRequest";
-import PrivateRoute from "../helpers/PrivateRoute";
 import { validationErrors } from "../helpers/validationErrors";
 import { handleError } from "../helpers/handleError";
+// Enables restricting page to signed-in users
+import PrivateRoute from "../helpers/PrivateRoute";
 
 class UpdateCourse extends Component {
-  constructor(props) {
-    super(props);
+  constructor() {
+    super();
     this.state = {
       course: null,
-
       validationErrors: null
     };
   }
 
   componentDidMount() {
-    // Get course ID #
-    const id = this.props.match.params.id;
+    // Calls API, updates state with course data.
+    // (Updating state must be done outside of render.)
+    (() => {
+      // Gets course ID #
+      const id = this.props.match.params.id;
 
-    // Get course from api
-    axios
-      .get(`http://localhost:5000/api/courses/${id}`)
-      .then(result => {
-        // store data in state
-        this.setState({
-          course: result.data
+      const url = `http://localhost:5000/api/courses/${id}`;
+
+      // Sends API request.
+      sendRequest({ url, method: "GET" })
+        .then(result => {
+          // Stores data in state.
+          this.setState({
+            course: result.data
+          });
+        })
+        .catch(error => {
+          // Uses history to redirect to an error page.
+          handleError({ error, callerThis: this });
         });
-      })
-      .catch(error => {
-        const callerThis = this;
-        handleError({ error, callerThis });
-      });
+    })();
   }
-
-  componentDidUpdate() {}
 
   render() {
     const { context } = this.props;
     const onSubmit = event => {
-      // prevents the page from re-loading
+      // Prevents the page from re-loading.
       event.preventDefault();
 
-      // Pass form, returns form data as JSON
+      // Passes form, returns form data as JSON.
       const data = getFormData(event.target);
 
-      // Get course ID #
+      // Gets course ID #.
       const id = this.props.match.params.id;
 
-      // get authorization info from global
-      const { username, password } = this.props.context.authenticatedUser;
+      // Gets authentication info.
+      const { username, password } = context.authenticatedUser;
 
       const url = `${config.apiBaseUrl}/courses/${id}`;
 
+      // Sends API request.
       sendRequest({ url, method: "PUT", username, password, data })
         .then(() => {
-          // back to main page
+          // Back to main page
           this.props.history.push(`/courses`);
         })
         .catch(error => {
-          const callerThis = this;
-          handleError({ error, callerThis });
+          // If the error is a validation error,
+          // then this helper function will add
+          // the validation errors to state.
+
+          // For all other errors, it will use
+          // history to redirect to an error page.
+
+          handleError({ error, callerThis: this });
         });
     };
 
     const updateCourseJSX = () => {
+      // Is the course ready? Is the user data ready?
       if (this.state.course && context.user) {
-        // get authorization info from context
+        // Gets authentication info.
         const { authenticatedUser } = context;
+
+        // Gets current user id.
         const currentUserId = context.user.id;
 
-        // get course info from state
+        // Gets course data.
         const courseOwnerId = this.state.course.userId;
         const {
           title,
@@ -86,6 +96,8 @@ class UpdateCourse extends Component {
           materialsNeeded,
           User
         } = this.state.course;
+
+        // Gets course owner's name.
         const courseOwnerName = `${User.firstName} ${User.lastName}`;
 
         // Does the current user own this course?
@@ -188,6 +200,6 @@ class UpdateCourse extends Component {
 }
 
 // Wraps component in HOC,
-// restricting page to signed-in users
-// Wrapper provides context
+// restricting page to signed-in users.
+// Wrapper provides context.
 export default PrivateRoute(UpdateCourse);

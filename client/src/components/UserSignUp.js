@@ -1,38 +1,40 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-
-// For wrapping on export, provides context
+// For wrapping on export, provides context.
 import { withContext } from "../helpers/context";
-
+// Helper functions
 import { validationErrors } from "../helpers/validationErrors";
 import { handleError } from "../helpers/handleError";
 
 class UserSignUp extends Component {
-  constructor(props) {
-    super(props);
+  constructor() {
+    super();
     this.state = {
       validationErrors: null
     };
   }
 
   onSubmit = event => {
-    // prevents the page from re-loading
+    // Prevents the page from re-loading.
     event.preventDefault();
 
-    // Hides password mismatch message
+    // Hides password mismatch message.
     document
       .querySelector("#confirm-password__error-msg")
       .classList.add("hide");
 
-    // Sends form to sign up
+    // Sends form to sign up.
     this.props.context
+      // Sends new user info to API.
+      // Gets user info from API, stores user info, sets cookie.
       .onSignUp(event.target)
       .then(() => {
+        // Upon successful account creation and login, goes to previous page.
         this.props.history.push(this.props.location.state.from.pathname);
       })
       .catch(error => {
-        // Client-side validation
-        // Password doesn't match confirm password
+        // Client-side validation.
+        // Does the password match the confirm password?
         if (error === "passwordMismatch") {
           console.log("passwordMismatch");
           document
@@ -43,13 +45,18 @@ class UserSignUp extends Component {
         }
       })
       .catch(error => {
-        const callerThis = this;
-        handleError({ error, callerThis });
+        // If the error is a server-side validation error,
+        // then this helper function will add
+        // the validation errors to state.
+
+        // For all other errors, it will use
+        // history to redirect to an error page.
+
+        handleError({ error, callerThis: this });
       });
   };
   onCancel = () => {
-    // Redirects to main page
-    // Note: In the router file, passing 'props' is necessary so this file has access to history.
+    // Redirects to main page.
     this.props.history.push(`/courses`);
   };
   render() {
@@ -150,5 +157,5 @@ class UserSignUp extends Component {
   }
 }
 
-// Wrapper provides context
+// Wrapper provides context.
 export default withContext(UserSignUp);

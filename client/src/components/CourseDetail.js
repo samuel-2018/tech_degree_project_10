@@ -1,89 +1,99 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
-
 // For wrapping on export, provides context
 import { withContext } from "../helpers/context";
-
+// Helper functions
 import { sendRequest } from "../helpers/sendRequest";
 import { handleError } from "../helpers/handleError";
 
 class CourseDetail extends Component {
-  // Passing 'props' to constructor and super allows access to props. (Otherwise, only available in render via "this.props".)
-  constructor(props) {
-    super(props);
+  constructor() {
+    super();
     this.state = {
       course: null
     };
   }
 
   componentDidMount() {
-    // Get course ID #
-    const id = this.props.id;
+    // Calls API, updates state with course data.
+    // (Updating state must be done outside of render.)
+    (() => {
+      const courseId = this.props.match.params.id;
 
-    const url = `http://localhost:5000/api/courses/${id}`;
+      const url = `http://localhost:5000/api/courses/${courseId}`;
 
-    sendRequest({ url, method: "GET" })
-      .then(result => {
-        // store data in state
-        this.setState({
-          course: result.data
+      sendRequest({ url, method: "GET" })
+        .then(result => {
+          // Stores data in state.
+          this.setState({
+            course: result.data
+          });
+        })
+        .catch(error => {
+          handleError({ error, callerThis: this });
         });
-      })
-      .catch(error => {
-        const callerThis = this;
-        handleError({ error, callerThis });
-      });
+    })();
   }
 
   render() {
     // Note: Content that relies on state being updated needs to be inside of render. Info in 'context' is sometimes updated. If the user is already signed in but refreshes this page, context will make an api call (using info from cookie) to get user info (including first and last name). The page needs updated with this info.
 
+    // Provides access to global.
     const { context } = this.props;
+
+    const courseId = this.props.match.params.id;
+
     const deleteCourse = () => {
-      // Get course ID #
-      const id = this.props.id;
-      // get authorization info from global
+      // Gets authorization info.
       const { username, password } = context.authenticatedUser;
 
-      const url = `http://localhost:5000/api/courses/${id}`;
+      const url = `http://localhost:5000/api/courses/${courseId}`;
 
       sendRequest({ url, method: "DELETE", username, password })
         .then(() => {
-          // TO DO redirect to main page
-          // or confirmation message and link to main page?
+          // TO DO Add confirmation message.
 
-          // back to main page
+          // Back to main page
           this.props.history.push(`/courses`);
         })
         .catch(error => {
-          const callerThis = this;
-          handleError({ error, callerThis });
+          // Uses history to redirect to an error page.
+          handleError({ error, callerThis: this });
         });
     };
 
     const actionsBarJSX = () => {
-      // (The course id is needed for the 'update' button.)
+      // These variables must be intialized
+      // here to provide proper scope.
+      let authenticatedUser = null,
+        currentUserId = null,
+        courseOwnerId = null;
+
+      // Note: "this.state.course" and "context.user"
+      // must be ready in order to get the id of
+      // the course owner and the current user.
       if (this.state.course && context.user) {
-        const { location } = this.props;
+        authenticatedUser = context.authenticatedUser;
+        currentUserId = context.user.id;
+        courseOwnerId = this.state.course.userId;
+      }
 
-        // get authorization info from context
-        const {
-          user: { id: userId },
-          authenticatedUser
-        } = context;
+      const { location } = this.props;
 
-        const { id, userId: courseOwnerId } = this.state.course;
-
-        return (
-          <div className="actions--bar">
-            <div className="bounds">
-              <div className="grid-100">
-                {authenticatedUser && userId === courseOwnerId && (
+      return (
+        <div className="actions--bar">
+          <div className="bounds">
+            <div className="grid-100">
+              {/* Is user authenticated? */}
+              {authenticatedUser &&
+                // Is the current user the course owner?
+                (currentUserId === courseOwnerId && (
+                  // Yes, display 'Update' and 'Delete' buttons.
                   <>
                     <Link
                       to={{
-                        pathname: `/courses/${id}/update`,
+                        pathname: `/courses/${courseId}/update`,
                         state: { from: location }
                       }}
                       className="button"
@@ -101,25 +111,29 @@ class CourseDetail extends Component {
                       Delete Course
                     </Link>
                   </>
-                )}
-                <Link
-                  to={{
-                    pathname: `/courses`,
-                    state: { from: location }
-                  }}
-                  className="button button-secondary"
-                >
-                  Return to List
-                </Link>
-              </div>
+                ))}
+              {/* Display "Return to List" button for all users. */}
+              <Link
+                to={{
+                  pathname: `/courses`,
+                  state: { from: location }
+                }}
+                className="button button-secondary"
+              >
+                Return to List
+              </Link>
             </div>
           </div>
-        );
-      }
+        </div>
+      );
     };
 
     const courseDetailJSX = () => {
+      // Is the course ready?
       if (this.state.course) {
+        // Yes, display course.
+
+        // Gets course data.
         const {
           title,
           description,
@@ -127,8 +141,11 @@ class CourseDetail extends Component {
           materialsNeeded,
           User
         } = this.state.course;
+
+        // Gets course owner's name.
         const courseOwnerName = `${User.firstName} ${User.lastName}`;
 
+        // Returns course JSX.
         return (
           <div className="bounds course--detail">
             <div className="grid-66">
@@ -160,17 +177,17 @@ class CourseDetail extends Component {
           </div>
         );
       }
+      // No, display nothing.
     };
 
     return (
       <>
         {actionsBarJSX()}
-
         {courseDetailJSX()}
       </>
     );
   }
 }
 
-// Wrapper provides context
+// Wrapper provides access to global functions and user data.
 export default withContext(CourseDetail);

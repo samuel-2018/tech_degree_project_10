@@ -14,6 +14,10 @@ Technologies used in this project include React, JSX, React Router, React Contex
 
 (The project’s CSS file was adapted from the file supplied for this project. The example HTML markup files were referenced when creating the React templates.)
 
+## How to start app
+
+Navigate to the root folder that contains this README file. Run ‘npm install’ to add dependencies. Run 'npm start' to launch app. Open 'http://localhost:3000/' in your browser.
+
 ## "Extra Credit" Features
 
 - Routes and stateless functional components for displaying: “Not Found”, “Forbidden”, and, for unhandled errors, “Error”.

@@ -1,7 +1,13 @@
 import React from "react";
 import { Redirect } from "react-router-dom";
 
-// NOTE: In development mode, the custom error page may only briefly show before going to the normal error page. Check the address bar to see which page would be rendered in production.
+// In development mode, the custom error page may
+// only briefly show before going to the normal error page.
+// Check the address bar to see which page would be
+// rendered in production.
+
+// Information on uses and limitations of "ErrorBoundary":
+// https://reactjs.org/docs/error-boundaries.html
 
 export class ErrorBoundary extends React.Component {
   constructor(props) {
@@ -15,7 +21,7 @@ export class ErrorBoundary extends React.Component {
 
   render() {
     if (this.state.hasError) {
-      console.log("ErrorBoundry; Code: ", this.state.code);
+      // console.log("ErrorBoundry; Code: ", this.state.code);
       return <Redirect to="/error" />;
     }
     // renders the child components

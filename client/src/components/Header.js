@@ -7,7 +7,10 @@ import { withContext } from "../helpers/context";
 const Header = props => {
   // Sets page title
   document.title = "Courses";
-
+  // 'location' is the current route.
+  //  Each 'Link' element provides that
+  // information to the page followed
+  // through the link.
   const { location, context } = props;
 
   return (
@@ -16,13 +19,13 @@ const Header = props => {
         <h1 className="header--logo">
           <Link to={{ pathname: `/courses` }}>Courses</Link>
         </h1>
-
+        {/* Is user authenticated? Is user data ready? */}
         {!!context.authenticatedUser && !!context.user ? (
+          // Yes, display welcome message and "Sign Out" button.
           <nav className="main-nav">
             <span>
               Welcome, {context.user.firstName + " " + context.user.lastName}!
             </span>
-
             <Link
               to={{
                 pathname: `/signout`,
@@ -34,6 +37,7 @@ const Header = props => {
             </Link>
           </nav>
         ) : (
+          // No, display "Sign Up" and "Sign In" buttons.
           <nav className="main-nav">
             <Link
               to={{
@@ -44,7 +48,6 @@ const Header = props => {
             >
               Sign Up
             </Link>
-
             <Link
               to={{
                 pathname: `/signin`,

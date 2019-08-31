@@ -28,6 +28,7 @@ function sendRequest({ url, method, username, password, data }) {
   // Sends request to API
   // returns promise to caller
   return axios(url, options);
+  // Caller handles errors.
 }
 
 export { sendRequest };

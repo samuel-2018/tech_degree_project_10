@@ -1,32 +1,33 @@
 import React, { Component } from "react";
-
-// For wrapping on export, provides context
+// For wrapping on export, provides context.
 import { withContext } from "../helpers/context";
-
+// Helper functions
 import { getFormData } from "../helpers/getFormData";
-
 import { handleError } from "../helpers/handleError";
 
 class UserSignIn extends Component {
   onSubmit = event => {
-    // prevents the page from re-loading
+    // Prevents the page from re-loading.
     event.preventDefault();
-    // Pass form, returns form data as JSON string
+
+    // Passes form, returns form data as JSON string.
     const data = getFormData(event.target);
 
-    // JavaScript object (needed to access properties)
+    // Creates JavaScript object (needed to access properties).
     const jsonObject = JSON.parse(data);
     const username = jsonObject.emailAddress;
     const password = jsonObject.password;
 
     this.props.context
+      // Gets user info from API, stores user info, sets cookie.
       .onSignIn({ username, password })
       .then(() => {
+        // Upon successful login, goes to previous page.
         this.props.history.push(this.props.location.state.from.pathname);
       })
       .catch(error => {
-        const callerThis = this;
-        handleError({ error, callerThis });
+        // Uses history to redirect to an error page.
+        handleError({ error, callerThis: this });
       });
   };
 
@@ -91,8 +92,6 @@ class UserSignIn extends Component {
     return <>{this.signInJSX()}</>;
   }
 }
-
-// export default UserSignIn;
 
 // Wrapper provides context
 export default withContext(UserSignIn);

@@ -41,11 +41,6 @@ app.use((err, req, res, next) => {
     console.error(`Global error handler: ${JSON.stringify(err.stack)}`);
   }
 
-  // TO DO add handling for this case?
-  // 'SequelizeUniqueConstraintError'
-  // If client doesn't supply a userId, API will respond with
-  // "SQLITE_CONSTRAINT: FOREIGN KEY constraint failed"
-
   // Create client-friendly validation errors
   let validationErrors = null;
   if (err.errors && err.name === "SequelizeValidationError") {

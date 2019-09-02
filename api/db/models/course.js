@@ -39,7 +39,7 @@ module.exports = (sequelize, DataTypes) => {
 
   Course.associate = models => {
     Course.belongsTo(models.User, {
-      // If client doesn't supply a userId, API will respond with
+      // If client doesn't supply a userId, sequelize will respond with
       // "SQLITE_CONSTRAINT: FOREIGN KEY constraint failed"
 
       // Will save to database ok without this,

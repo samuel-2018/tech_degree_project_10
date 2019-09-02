@@ -125,7 +125,8 @@ router
       // Get current authenticated user
       const user = await req.currentUser.dataValues.id;
 
-      // IMPORTANT: This prevents a user from saving data to someone else's account. (And also would be needed if client didn't supply userId.)
+      // IMPORTANT: This prevents a user from saving data to someone else's account.
+      // (And also would be needed if client didn't supply userId.)
       req.body.userId = await user;
 
       // Creates and saves new course
@@ -191,8 +192,6 @@ router
   // PUT - Update a course
   .put(authenticateUser, authenticateAccess, async (req, res, next) => {
     try {
-      // TO DO Does this section need to be changed to be like create a new course? Can a user supply a wrong userId and change ownership of a course?
-
       // Get course
       // IMPORTANT: Gets 'id' in params NOT 'id' in client JSON.
       // (For reliablity and security, use one source of truth for 'id'.)
@@ -254,7 +253,7 @@ router
       }
       // Success
       res.writeHead(204, {
-        // BUG? '/' is the project requirement... but '/api' would be more useful
+        // Note: '/' is the project requirement, but '/api' might be more useful.
         // https://app.slack.com/client/TBPQFGEAH/CBPRYGLSZ/thread/CBPRYGLSZ-1563967481.032400
         Location: "/"
       });

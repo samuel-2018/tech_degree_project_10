@@ -108,6 +108,10 @@ Note: All course ids must be supplied via the route parameter.
     estimatedTime: "6 hours",
     materialsNeeded: "* Notebook computer running Mac OS X or Windows * Text editor",
     userId: 2
+    "User": {
+        "firstName": "Sally",
+        "lastName": "Jones"
+    }
 }
 ```
 

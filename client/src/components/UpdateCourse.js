@@ -45,15 +45,16 @@ class UpdateCourse extends Component {
 
   render() {
     const { context } = this.props;
+
+    // Gets course ID #.
+    const id = this.props.match.params.id;
+
     const onSubmit = event => {
       // Prevents the page from re-loading.
       event.preventDefault();
 
       // Passes form, returns form data as JSON.
       const data = getFormData(event.target);
-
-      // Gets course ID #.
-      const id = this.props.match.params.id;
 
       // Gets authentication info.
       const { username, password } = context.authenticatedUser;
@@ -192,7 +193,7 @@ class UpdateCourse extends Component {
     };
 
     const onCancel = () => {
-      this.props.history.push(`/courses`);
+      this.props.history.push(`/courses/${id}`);
     };
 
     return <>{updateCourseJSX()}</>;

@@ -50,7 +50,7 @@ class CourseDetail extends Component {
       // Gets authorization info.
       const { username, password } = context.authenticatedUser;
 
-      const url = `http://localhost:5000/api/courses/${courseId}`;
+      const url = `${config.apiBaseUrl}/courses/${courseId}`;
 
       sendRequest({ url, method: "DELETE", username, password })
         .then(() => {

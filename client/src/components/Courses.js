@@ -3,6 +3,9 @@ import { Link } from "react-router-dom";
 import { sendRequest } from "../helpers/sendRequest";
 import { handleError } from "../helpers/handleError";
 
+// Base URL: config.apiBaseUrl
+import config from "../config";
+
 class Courses extends Component {
   constructor() {
     super();
@@ -15,7 +18,7 @@ class Courses extends Component {
     // Calls API, updates state with courses data.
     // (Updating state must be done outside of render.)
     (() => {
-      const url = "http://localhost:5000/api/courses";
+      const url = `${config.apiBaseUrl}/courses`;
 
       sendRequest({ url, method: "GET" })
         .then(result => {

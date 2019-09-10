@@ -6,6 +6,8 @@ import { withContext } from "../helpers/context";
 // Helper functions
 import { sendRequest } from "../helpers/sendRequest";
 import { handleError } from "../helpers/handleError";
+// Base URL: config.apiBaseUrl
+import config from "../config";
 
 class CourseDetail extends Component {
   constructor() {
@@ -21,7 +23,7 @@ class CourseDetail extends Component {
     (() => {
       const courseId = this.props.match.params.id;
 
-      const url = `http://localhost:5000/api/courses/${courseId}`;
+      const url = `${config.apiBaseUrl}/courses/${courseId}`;
 
       sendRequest({ url, method: "GET" })
         .then(result => {

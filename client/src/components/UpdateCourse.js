@@ -26,7 +26,7 @@ class UpdateCourse extends Component {
       // Gets course ID #
       const id = this.props.match.params.id;
 
-      const url = `http://localhost:5000/api/courses/${id}`;
+      const url = `${config.apiBaseUrl}/courses/${id}`;
 
       // Sends API request.
       sendRequest({ url, method: "GET" })
